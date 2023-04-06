@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="../../../public/css/user/sign-in & sign-up/sign-in & sign-up.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="../../../public/images/logo.png" type="image/icon type" />
+
+    <title>Connect with Us</title>
+</head>
+
+<body>
+    <div class="sign-up-most-outer-div">
+        <div class="sign-up-inner-div">
+            <div class="heading-images d-flex flex-column align-items-center mb-5">
+                <a href="/">
+                <img class="camspot-logo" src="../../../public/images/Camspot Logo.png" alt=""></a>
+                <img class="camspot-join-us" src="../../../public/images/JOIN US text.png" alt="">
+            </div>
+            <div class="sign-up-inputs mt-5">
+                <form action="">
+                    <div class="two-sign-up-inputs d-flex">
+                        <div class="mb-4 double-inputs-outer-div">
+                            <input class="double-inputs mb-3 me-5" type="text" id="f-name" required />
+                            <label class="input-label" for="f-name">First Name<label>
+                        </div>
+                        <div class="mb-4 double-inputs-outer-div">
+                            <input class="double-inputs mb-3" type="text" id="l-name" required />
+                            <label class="input-label" for="l-name">Last Name<label>
+                        </div>
+                    </div>
+                    <div class="one-sign-up-inputs">
+                        <div class="mb-4 single-inputs-outer-div">
+                            <input class="single-inputs mb-3" type="text" id="username" required />
+                            <label class="input-label" for="username">Username</label>
+                        </div>
+                        <div class="mb-4 single-inputs-outer-div">
+                            <input class="single-inputs mb-3" type="text" id="email" required />
+                            <label class="input-label" for="email">E-Mail</label>
+                        </div>
+                        <div class="mb-4 single-inputs-outer-div">
+                            <input class="single-inputs mb-3" type="text" id="pass" required />
+                            <label class="input-label" for="pass">Password</label>
+                        </div>
+                    </div>
+                    <div class="form-check d-flex align-items-center flex-column w-100 justify-content-center">
+                        <label class="form-check-label">
+                            <input type="checkbox">
+                            <p class="d-inline checkbox-p1">I Agree To The </p>
+                            <p class="d-inline checkbox-p2">Terms And Conditions</p>
+
+                        </label>
+                        <div>
+                            <button class="submit-btn px-4 py-1 my-3" onclick="location.href='/upload-profile-picture';">Sign Up</button>
+                        </div>
+                        <div>
+                            <p class="d-inline  sign-up-p">Already Have An Account</p>
+                            <p class="sign-up-anchor" onclick="ShowSignIn()" href="">Sign In?</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- -------------------------------------------------- -->
+    <!-- -------------------------------------------------- -->
+
+
+
+    <div class="most-outer-img-div">
+        <img class="img-fluid" src="../../../public/images/Sign Up Image.png" alt="">
+    </div>
+
+    <!-- -------------------------------------------------- -->
+    <!-- -------------------------------------------------- -->
+
+    <div class="sign-in-most-outer-div">
+        <div class="sign-in-inner-div">
+            <div class="heading-images d-flex flex-column align-items-center mb-5">
+                <a href="/">
+                <img class="camspot-logo" src="../../../public/images/Camspot Logo.png" alt=""></a>
+                <img class="camspot-join-us" src="../../../public/images/JOIN US text.png" alt="">
+            </div>
+            <div class="sign-in-inputs mt-5">
+                <form action="">
+                    <div class="one-sign-up-inputs">
+                        <div class="mb-4 single-inputs-outer-div">
+                            <input class="single-inputs mb-3" type="text" id="username" required />
+                            <label class="input-label" for="username">Username</label>
+                        </div>
+                        <div class="mb-4 single-inputs-outer-div">
+                            <input class="single-inputs mb-3" type="text" id="pass" required />
+                            <label class="input-label" for="pass">Password</label>
+                        </div>
+                    </div>
+                    <div class="form-check d-flex align-items-center flex-column w-100 justify-content-center">
+                        <div style="margin-bottom:2em;">
+                            <a href="/" class="submit-btn px-4 py-1"> Sign In</a>
+                        </div>
+                        <div>
+                            <p class="d-inline  sign-in-p">Already Have An Account</p>
+                            <p class="sign-up-anchor" onclick="ShowSignUp()" href="">Sign Up?</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- -------------------------------------------------- -->
+    <!-- -------------------------------------------------- -->
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function ShowSignUp() {
+            $(".sign-in-most-outer-div").css({
+                "opacity": 0,
+                "visibility": "hidden"
+            });
+            $(".most-outer-img-div").css({
+                "margin-left" : "1vw",
+                "transform" : "scale(1.06)"
+            });
+            $(".sign-up-most-outer-div").css({
+                "margin-left" : "5vw",
+                "opacity": 1,
+                "visibility": "visible"
+            });
+        }
+        function ShowSignIn() {
+            $(".sign-in-most-outer-div").css({
+                "opacity": 1,
+                "visibility": "visible",
+                "position" : "relative",
+                "left" : "-160px"
+            });
+            $(".most-outer-img-div").css({
+                "margin-left" : "-36vw",
+                "transform" : "scale(.7)"
+            });
+            $(".sign-up-most-outer-div").css({
+                "opacity": 0,
+                "visibility": "hidden"
+            });
+        }
+    </script>
+</body>
+
+</html>
