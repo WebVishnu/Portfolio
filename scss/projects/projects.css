@@ -3,6 +3,9 @@
   --background: #FF2B51;
   --dark: #34314C;
 }
+body{
+  background-color: black;
+}
 
 .loading-box {
   position: fixed;
