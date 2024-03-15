@@ -1,8 +1,5 @@
-"use client";
-import { useEffect } from "react";
 import "./globals.css";
 import { Inter } from "next/font/google";
-import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,33 +10,9 @@ export const metadata = {
 };
 
 export default function RootLayout(props) {
-  useEffect(() => {
-    let scroll;
-    import("locomotive-scroll").then((locomotiveModule) => {
-      scroll = new locomotiveModule.default({
-        el: document.querySelector("scroll-up"),
-        smooth: true,
-        smoothMobile: false,
-        resetNativeScroll: true,
-      });
-    });
-
-    // `useEffect`'s cleanup phase
-    return () => {
-      if (scroll) scroll.destroy();
-    };
-  });
   return (
     <>
       <html lang="en">
-        <Head>
-          <link
-            rel="icon"
-            href="/icons?<generated>"
-            type="image/<generated>"
-            sizes="<generated>"
-          />
-        </Head>
         <body
           className={`${inter.className} bg-black overflow-x-hidden scroll-up`}
         >

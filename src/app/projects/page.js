@@ -15,6 +15,23 @@ const Page = () => {
   const [position, setPosition] = useState({ x: "-100px", y: "-100px" });
 
   useEffect(() => {
+    let scroll;
+    import("locomotive-scroll").then((locomotiveModule) => {
+      scroll = new locomotiveModule.default({
+        el: document.querySelector("scroll-up"),
+        smooth: true,
+        smoothMobile: false,
+        resetNativeScroll: true,
+      });
+    });
+
+    // `useEffect`'s cleanup phase
+    return () => {
+      if (scroll) scroll.destroy();
+    };
+  });
+  
+  useEffect(() => {
     $(".mouse-hover").on("mouseover", () => {
       $(".mouse").css({ scale: 2 });
     });

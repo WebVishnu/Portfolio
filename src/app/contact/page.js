@@ -37,6 +37,22 @@ const Page = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  useEffect(() => {
+    let scroll;
+    import("locomotive-scroll").then((locomotiveModule) => {
+      scroll = new locomotiveModule.default({
+        el: document.querySelector("scroll-up"),
+        smooth: true,
+        smoothMobile: false,
+        resetNativeScroll: true,
+      });
+    });
+
+    // `useEffect`'s cleanup phase
+    return () => {
+      if (scroll) scroll.destroy();
+    };
+  });
   // =================================================================
   // mouse Effect
   const [position, setPosition] = useState({ x: "-100px", y: "-100px" });
