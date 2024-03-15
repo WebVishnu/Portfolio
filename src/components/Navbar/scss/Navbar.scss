@@ -1,0 +1,12 @@
+.nav-link{
+    @apply mx-3 cursor-pointer relative transition-all;
+    &:hover::before{
+        width: 100%;
+    }
+    &::before{
+        content: '';
+        height: 2px;
+        width: 0;
+        @apply absolute bottom-[-5px] left-0 transition-all bg-[#6A6A6A];
+    }
+}
