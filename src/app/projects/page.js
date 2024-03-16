@@ -30,7 +30,7 @@ const Page = () => {
       if (scroll) scroll.destroy();
     };
   });
-  
+
   useEffect(() => {
     $(".mouse-hover").on("mouseover", () => {
       $(".mouse").css({ scale: 2 });
@@ -47,8 +47,7 @@ const Page = () => {
   return (
     <div onMouseMove={handleMouseMove}>
       <Navbar /> <SideNavbar />
-      <div className="cursor-none h-screen w-screen lg:px-52 md:px-32 px-5">
-        {/* <div className="absolute h-32 w-32 bg-white top-0 right-44 rounded-circle"></div> */}
+      <div className="cursor-none h-screen w-screen lg:px-52 md:px-32 px-3">
         <motion.h1
           viewport={{ once: true }}
           initial={{ opacity: 0, y: "20px" }}
@@ -67,12 +66,7 @@ const Page = () => {
         >
           I can deliver results that exceeds your expectations
         </motion.p>
-        <div
-          className="max-w-[1500px] mx-auto lg:px-0 md:px-32 px-5 grid gap-12 mt-12"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-          }}
-        >
+        <div className="max-w-[1500px] mx-auto lg:px-0 md:px-32 px-5 grid gap-12 grid-cols-autofit mt-12">
           {projects.map((project, index) => {
             return (
               <Link
