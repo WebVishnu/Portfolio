@@ -66,7 +66,7 @@ const Page = () => {
         >
           I can deliver results that exceeds your expectations
         </motion.p>
-        <div className="max-w-[1500px] mx-auto lg:px-0 md:px-32 px-5 grid gap-12 grid-cols-autofit mt-12">
+        <div className="max-w-[1500px] mx-auto lg:px-0 md:px-32 px-5 grid gap-12 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 grid-cols-autofit mt-12">
           {projects.map((project, index) => {
             return (
               <Link

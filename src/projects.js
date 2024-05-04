@@ -72,6 +72,15 @@ export const projects = [
       role: "UI/UX Designer",
       link: "https://dribbble.com/shots/22247022-Online-Learn-and-Earn-Mobile-App",
     },
+    {
+      name: "CRM - Company Management",
+      poster:
+        "/images/CRM.png",
+      description:
+        "Developed a Business Details Management System.",
+      role: "Full stack developer",
+      link: "https://github.com/WebVishnu/CRM-Company-management",
+    },
   
     {
       name: "Busiman",
