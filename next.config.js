@@ -4,9 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn.dribbble.com",
-        port: "",
-        pathname: "/userupload/**",
+        hostname: "*",
       },
     ],
   },
