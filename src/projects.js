@@ -1,11 +1,38 @@
 export const projects = [
     {
+      name: "GDGC ABESIT",
+      poster:
+        "https://live.staticflickr.com/65535/54046164513_533afa4245_b.jpg",
+      description:
+        "Developed and hosted on vercel",
+      role: "Full stack developer",
+      link: "https://gdgc-website-ten.vercel.app",
+    },
+    {
       name: "BrandOPT Landing Page",
       poster:
         "https://cdn.dribbble.com/userupload/9984909/file/original-9b49e180793df9c5d35e908287912d62.png",
       description: "Designed and developed a modern landing page for BrandOPT.",
       role: "Designer & Developer",
-      link: "https://www.brandopt.in",
+      link: "https://skyrocket-vishnu9412.vercel.app",
+    },
+    {
+      name: "CRM - Company Management",
+      poster:
+        "/images/CRM.png",
+      description:
+        "Developed a Business Details Management System.",
+      role: "Full stack developer",
+      link: "https://github.com/WebVishnu/CRM-Company-management",
+    },
+     {
+      name: "Branch OPT Concept",
+      poster:
+        "https://live.staticflickr.com/65535/54046166378_c410586b22_b.jpg",
+      description:
+        "Developed and hosted on vercel",
+      role: "Frontend developer",
+      link: "https://brand-opt-vishnu9412.vercel.app",
     },
     {
       name: "Music Player",
@@ -71,15 +98,6 @@ export const projects = [
         "Developed an interactive mobile app for education and earning opportunities.",
       role: "UI/UX Designer",
       link: "https://dribbble.com/shots/22247022-Online-Learn-and-Earn-Mobile-App",
-    },
-    {
-      name: "CRM - Company Management",
-      poster:
-        "/images/CRM.png",
-      description:
-        "Developed a Business Details Management System.",
-      role: "Full stack developer",
-      link: "https://github.com/WebVishnu/CRM-Company-management",
     },
   
     {
