@@ -6,7 +6,7 @@ export const projects = [
       description:
         "Developed and hosted on vercel",
       role: "Full stack developer",
-      link: "https://gdgc-website-ten.vercel.app",
+      link: "https://gdgc-abesit.com",
     },
     {
       name: "BrandOPT Landing Page",

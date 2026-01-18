@@ -27,6 +27,9 @@ const Navbar = () => {
           <Link href="/projects">Work</Link>
         </motion.li>
         <motion.li className="nav-link mouse-hover">
+          <Link href="/mind-blowing">Mind Blowing</Link>
+        </motion.li>
+        <motion.li className="nav-link mouse-hover">
           <Link href="/contact">Contact</Link>
         </motion.li>
         <motion.li className="nav-link mouse-hover">
