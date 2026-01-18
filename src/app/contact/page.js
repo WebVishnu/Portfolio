@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import axios from "axios";
-import $ from "jquery";
 import Link from "next/link";
 // fonts
 import { Old_Standard_TT } from "next/font/google";
@@ -40,30 +39,53 @@ const Page = () => {
   useEffect(() => {
     let scroll;
     import("locomotive-scroll").then((locomotiveModule) => {
-      scroll = new locomotiveModule.default({
-        el: document.querySelector("scroll-up"),
-        smooth: true,
-        smoothMobile: false,
-        resetNativeScroll: true,
-      });
+      const scrollElement = document.querySelector(".scroll-up");
+      if (scrollElement) {
+        scroll = new locomotiveModule.default({
+          el: scrollElement,
+          smooth: true,
+          smoothMobile: false,
+          resetNativeScroll: true,
+        });
+      }
     });
 
     // `useEffect`'s cleanup phase
     return () => {
       if (scroll) scroll.destroy();
     };
-  });
+  }, []);
   // =================================================================
   // mouse Effect
   const [position, setPosition] = useState({ x: "-100px", y: "-100px" });
 
   useEffect(() => {
-    $(".mouse-hover").on("mouseover", () => {
-      $(".mouse").css({ scale: 2 });
+    const handleMouseOver = () => {
+      const mouseElements = document.querySelectorAll(".mouse");
+      mouseElements.forEach((el) => {
+        el.style.transform = "scale(2)";
+      });
+    };
+    const handleMouseLeave = () => {
+      const mouseElements = document.querySelectorAll(".mouse");
+      mouseElements.forEach((el) => {
+        el.style.transform = "scale(1)";
+      });
+    };
+
+    const mouseHoverElements = document.querySelectorAll(".mouse-hover");
+    mouseHoverElements.forEach((el) => {
+      el.addEventListener("mouseover", handleMouseOver);
+      el.addEventListener("mouseleave", handleMouseLeave);
     });
-    $(".mouse-hover").on("mouseleave", () => {
-      $(".mouse").css({ scale: 1 });
-    });
+
+    // Cleanup event handlers
+    return () => {
+      mouseHoverElements.forEach((el) => {
+        el.removeEventListener("mouseover", handleMouseOver);
+        el.removeEventListener("mouseleave", handleMouseLeave);
+      });
+    };
   }, []);
 
   const handleMouseMove = (e) => {
@@ -71,35 +93,54 @@ const Page = () => {
   };
 
   // handling sign in
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const contactUs = async (data) => {
     try {
-      $(".submitBtn").html("Please wait...").attr("type", "button");
-      axios
-        .post(`/api/contact`, {
-          name: data.name,
-          email: data.email,
-          mobile: data.phone,
-          description: data.description,
-        })
-        .then((res) => {
-          $(".form").addClass("hidden");
-          $(".video-div")
-            .removeClass("hidden")
-            .addClass("flex flex-col items-center justify-center");
-          $(".video").trigger("play");
-          reset();
-        })
-        .catch((e) => {
-          $(".form").addClass("hidden");
-          $(".video-div")
-            .removeClass("hidden")
-            .addClass("flex flex-col items-center justify-center");
-          $(".video").trigger("play");
-          reset();
-          console.log(e);
-        });
+      setSubmitStatus("loading");
+      setErrorMessage("");
+      
+      const submitBtn = document.querySelector(".submitBtn");
+      if (submitBtn) {
+        submitBtn.textContent = "Please wait...";
+        submitBtn.disabled = true;
+      }
+      
+      const response = await axios.post(`/api/contact`, {
+        name: data.name,
+        email: data.email,
+        mobile: data.phone,
+        description: data.description,
+      });
+
+      if (response.data && response.data.msg === "success") {
+        setSubmitStatus("success");
+        const formElement = document.querySelector(".form");
+        const videoDiv = document.querySelector(".video-div");
+        if (formElement) {
+          formElement.classList.add("hidden");
+        }
+        if (videoDiv) {
+          videoDiv.classList.remove("hidden");
+          videoDiv.classList.add("flex", "flex-col", "items-center", "justify-center");
+        }
+        reset();
+      } else {
+        throw new Error("Unexpected response from server");
+      }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error submitting form:", error);
+      setSubmitStatus("error");
+      setErrorMessage(
+        error.response?.data?.error || 
+        "Failed to send message. Please try again later."
+      );
+      const submitBtn = document.querySelector(".submitBtn");
+      if (submitBtn) {
+        submitBtn.textContent = "Send Us a message";
+        submitBtn.disabled = false;
+      }
     }
   };
   return (
@@ -295,11 +336,17 @@ const Page = () => {
             {errors.description && (
               <span className="text-red-700">{errors.description.message}</span>
             )}
+            {errorMessage && (
+              <div className="my-2 p-3 bg-red-900/30 border border-red-700 text-red-300 rounded">
+                {errorMessage}
+              </div>
+            )}
             <button
               type="submit"
-              className={`submitBtn my-2 text-black  bg-white w-full py-3 px-5 mouse-hover`}
+              className={`submitBtn my-2 text-black  bg-white w-full py-3 px-5 mouse-hover disabled:opacity-50 disabled:cursor-not-allowed`}
+              disabled={submitStatus === "loading"}
             >
-              Send Us a message
+              {submitStatus === "loading" ? "Please wait..." : "Send Us a message"}
             </button>
           </form>
         </motion.div>

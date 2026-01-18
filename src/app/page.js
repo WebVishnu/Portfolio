@@ -6,7 +6,6 @@ import Mouse from "@/components/Mouse";
 import Navbar from "@/components/Navbar/Navbar";
 import SideNavbar from "@/components/SideNavbar/SideNavbar";
 import { motion } from "framer-motion";
-import $ from "jquery";
 import { useEffect, useState } from "react";
 // import LocomotiveScroll from "locomotive-scroll";
 import MyWorkSection from "@/components/Homepage/Work/MyWorkSection";
@@ -18,27 +17,50 @@ export default function Home() {
   useEffect(() => {
     let scroll;
     import("locomotive-scroll").then((locomotiveModule) => {
-      scroll = new locomotiveModule.default({
-        el: document.querySelector("scroll-up"),
-        smooth: true,
-        smoothMobile: false,
-        resetNativeScroll: true,
-      });
+      const scrollElement = document.querySelector(".scroll-up");
+      if (scrollElement) {
+        scroll = new locomotiveModule.default({
+          el: scrollElement,
+          smooth: true,
+          smoothMobile: false,
+          resetNativeScroll: true,
+        });
+      }
     });
 
     // `useEffect`'s cleanup phase
     return () => {
       if (scroll) scroll.destroy();
     };
-  });
+  }, []);
 
   useEffect(() => {
-    $(".mouse-hover").on("mouseover", () => {
-      $(".mouse").css({ scale: 2 });
+    const handleMouseOver = () => {
+      const mouseElements = document.querySelectorAll(".mouse");
+      mouseElements.forEach((el) => {
+        el.style.transform = "scale(2)";
+      });
+    };
+    const handleMouseLeave = () => {
+      const mouseElements = document.querySelectorAll(".mouse");
+      mouseElements.forEach((el) => {
+        el.style.transform = "scale(1)";
+      });
+    };
+
+    const mouseHoverElements = document.querySelectorAll(".mouse-hover");
+    mouseHoverElements.forEach((el) => {
+      el.addEventListener("mouseover", handleMouseOver);
+      el.addEventListener("mouseleave", handleMouseLeave);
     });
-    $(".mouse-hover").on("mouseleave", () => {
-      $(".mouse").css({ scale: 1 });
-    });
+
+    // Cleanup event handlers
+    return () => {
+      mouseHoverElements.forEach((el) => {
+        el.removeEventListener("mouseover", handleMouseOver);
+        el.removeEventListener("mouseleave", handleMouseLeave);
+      });
+    };
   }, []);
 
   const handleMouseMove = (e) => {
