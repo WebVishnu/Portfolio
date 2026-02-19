@@ -15,12 +15,17 @@ const THREE_CDN = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js
 
 // Gesture classification (normalized coords)
 const PINCH_THRESHOLD = 0.08;
+const PINCH_NOT_FIST_MIN = 0.045; // index-middle tip distance: pinch has fingers apart, fist has them curled together
 const OPEN_AVG_MIN = 0.08;
 const DEBOUNCE_FRAMES = 5;
 const POINT_INDEX_MARGIN = 0.02;  // index tip above MCP
 const POINT_OTHERS_MARGIN = 0.02; // others bent: tip >= mcp - margin
 
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const dist3 = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, (a.z ?? 0) - (b.z ?? 0));
+
+// MediaPipe hand skeleton connections (indices)
+const HAND_CONNECTIONS = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],[0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20],[5,9],[9,13],[13,17]];
 
 export default function ParticleCameraIdea() {
   const canvasRef = useRef(null);
@@ -52,6 +57,9 @@ export default function ParticleCameraIdea() {
   const handLandmarkerRef = useRef(null);
   const debounceRef = useRef({ last: "none", count: 0 });
   const lastLoggedGesture = useRef(null);
+  const landmarksRef = useRef(null);
+  const previewOverlayRef = useRef(null);
+  const previewContainerRef = useRef(null);
 
   // If Three.js was already loaded (e.g. revisiting the page), set ready
   useEffect(() => {
@@ -135,19 +143,34 @@ export default function ParticleCameraIdea() {
         let raw;
 
         if (!lm) {
+          landmarksRef.current = null;
           handInputRef.current.handX = null;
           handInputRef.current.handY = null;
           handInputRef.current.fingerX = null;
           handInputRef.current.fingerY = null;
           raw = "none";
         } else {
+          landmarksRef.current = lm;
           handInputRef.current.handX = lm[8].x;
           handInputRef.current.handY = lm[8].y;
           handInputRef.current.fingerX = lm[8].x;
           handInputRef.current.fingerY = lm[8].y;
 
           const d48 = dist(lm[4], lm[8]);
-          if (d48 < PINCH_THRESHOLD) {
+          // Middle finger only, any direction: middle extended (tip far from MCP), others bent
+          const extMid = dist3(lm[12], lm[9]);
+          const extIdx = dist3(lm[8], lm[5]);
+          const extRing = dist3(lm[16], lm[13]);
+          const extPinky = dist3(lm[20], lm[17]);
+          const isMiddle =
+            extMid > extIdx && extMid > extRing && extMid > extPinky &&
+            extIdx < extMid * 0.75 && extRing < extMid * 0.75 && extPinky < extMid * 0.75;
+          if (isMiddle) {
+            raw = "middle";
+          } else if (
+            d48 < PINCH_THRESHOLD &&
+            dist(lm[8], lm[12]) > PINCH_NOT_FIST_MIN
+          ) {
             raw = "pinch";
           } else if (
             lm[8].y < lm[5].y - POINT_INDEX_MARGIN &&
@@ -178,12 +201,51 @@ export default function ParticleCameraIdea() {
         }
       }
 
+      function drawHandOverlay() {
+        const canvas = previewOverlayRef.current;
+        const container = previewContainerRef.current;
+        const lm = landmarksRef.current;
+        if (!canvas || !container || !lm) {
+          if (canvas && container) {
+            const ctx = canvas.getContext("2d");
+            if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+          return;
+        }
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+        }
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        ctx.clearRect(0, 0, w, h);
+        const toX = (p) => p.x * w;
+        const toY = (p) => p.y * h;
+        ctx.strokeStyle = "#22c55e";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (const [a, b] of HAND_CONNECTIONS) {
+          ctx.moveTo(toX(lm[a]), toY(lm[a]));
+          ctx.lineTo(toX(lm[b]), toY(lm[b]));
+        }
+        ctx.stroke();
+        ctx.fillStyle = "#22c55e";
+        for (const p of lm) {
+          ctx.beginPath();
+          ctx.arc(toX(p), toY(p), 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
       function detectLoop() {
         if (cancelled) return;
         rafHandsId.current = requestAnimationFrame(detectLoop);
         if (video.readyState >= 2 && video.videoWidth > 0) {
           const result = handLandmarker.detectForVideo(video, performance.now());
           processResult(result);
+          drawHandOverlay();
         }
       }
       detectLoop();
@@ -315,19 +377,33 @@ export default function ParticleCameraIdea() {
         )}
       </div>
 
+      {/* Middle finger gesture – centered emoji */}
+      {debugGesture === "middle" && (
+        <div className="absolute inset-0 z-[15] flex items-center justify-center pointer-events-none">
+          <span className="text-6xl md:text-8xl animate-pulse">🖕</span>
+        </div>
+      )}
+
       {/* Debug: gesture label – top-left */}
       <div className="fixed top-4 left-4 z-20 px-3 py-2 rounded bg-black/60 text-gray-300 text-sm font-mono">
         Gesture: {debugGesture}
       </div>
 
-      {/* Debug webcam – top-right, hidden by default; remove opacity-0 to show */}
-      <div className="fixed top-4 right-4 z-20 w-40 h-28 rounded border border-white/20 bg-black/50 overflow-hidden opacity-0">
+      {/* Camera preview – bottom-left with hand tracking overlay */}
+      <div
+        ref={previewContainerRef}
+        className="fixed bottom-4 left-4 z-20 w-44 h-32 md:w-52 md:h-40 rounded-lg border-2 border-emerald-500/60 bg-black/70 overflow-hidden shadow-lg shadow-emerald-500/20"
+      >
         <video
           ref={videoRef}
           autoPlay
           muted
           playsInline
-          className="w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <canvas
+          ref={previewOverlayRef}
+          className="absolute inset-0 w-full h-full pointer-events-none"
         />
       </div>
 
